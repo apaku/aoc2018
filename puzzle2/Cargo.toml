@@ -1,0 +1,6 @@
+[package]
+name = "puzzle2"
+version = "0.1.0"
+authors = ["Andreas Pakulat <andreas@froglogic.com>"]
+
+[dependencies]
