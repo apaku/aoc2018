@@ -5,6 +5,8 @@ use std::io::{BufRead};
 extern crate regex;
 use regex::Regex;
 use std::cmp;
+use std::collections::HashSet;
+use std::iter::FromIterator;
 
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Hash)]
 struct Point {
@@ -71,6 +73,24 @@ fn part1(patches: &Vec<Rect>) -> usize {
     return allpoints.len();
 }
 
+fn nonoverlapped(r: &Rect, others: &Vec<Rect>, allnonoverlapped: &mut HashSet<i32> ) {
+    for other in others {
+        if overlaps(r, other) || overlaps(other, r) {
+            allnonoverlapped.remove(&other.id);
+            allnonoverlapped.remove(&r.id);
+        }
+    }
+    if others.len() > 1 {
+        let (nextrect, rest) = others.split_first().unwrap();
+        nonoverlapped(nextrect, &rest.to_vec(), allnonoverlapped);
+    }
+}
+
+fn part2(patches: &Vec<Rect>) -> HashSet<i32> {
+    let (head, tail) = patches.split_first().unwrap();
+    let mut allnonoverlapped = HashSet::from_iter(patches.iter().map(|r| r.id));
+    nonoverlapped(head, &tail.to_vec(), &mut allnonoverlapped);
+    return allnonoverlapped;
 }
 
 fn parse(lines: &Vec<String>) -> Vec<Rect> {
@@ -100,6 +120,6 @@ fn main() {
     let stdin = std::io::stdin();
     let lines: Vec<String> = stdin.lock().lines().map(|l| l.unwrap()).collect();
     let patches = parse(&lines);
+    println!("Part2: {:?}", part2(&patches));
     println!("Part1: {}", part1(&patches));
-    println!("Part2: {:?}", part2(&lines));
 }
