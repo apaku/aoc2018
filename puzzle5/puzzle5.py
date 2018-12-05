@@ -6,21 +6,14 @@
 import sys
 
 def reactedchain(unreactedchain):
-    chain = list(unreactedchain)
-    while True:
-        newchain = list(chain)
-        for i in range(len(chain) - 1):
-            c1 = chain[i]
-            c2 = chain[i + 1]
-            c1l = c1.lower()
-            c2l = c2.lower()
-            if c1l == c2l and (c1 != c2):
-                newchain = chain[:i] + chain[i + 2:]
-                break
-        #newchain = list(reactedchain(chain))
-        if len(newchain) == len(chain):
-            break
-        chain = newchain
+    def different_cases(a, b):
+        return a.lower() == b.lower() and a != b
+    chain = []
+    for c in unreactedchain:
+        if chain and different_cases(c, chain[-1]):
+            chain.pop()
+        else:
+            chain.append(c)
     return chain
 
 chain = sys.stdin.read().strip()
