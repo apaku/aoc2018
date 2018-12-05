@@ -3,6 +3,7 @@
 # Copyright 2018 Andreas Pakulat <andreaspakulat+github@gmail.com>
 # License: MIT
 
+from collections import Counter
 import sys
 import re
 
@@ -28,25 +29,16 @@ def calculateoverlap(r1, r2):
         for y in range(y1, y2):
             yield (x,y)
 
-def overlap(r1, r2):
-    if not overlaps(r1, r2):
-        if overlaps(r2, r1):
-            return calculateoverlap(r2, r1)
-        else:
-            return []
-    return calculateoverlap(r1, r2)
+def generate_all_points(rects):
+    for rect in rects:
+        for x in range(rect['x1'], rect['x2']):
+            for y in range(rect['y1'], rect['y2']):
+                yield (x, y)
 
-def overlappedpoints(rect, others):
-    allpoints = set()
-    for other in others:
-        yield overlap(rect, other)
+def part1(rects):
+    counter = Counter(generate_all_points(rects))
+    return len(list(filter(lambda x: x[1] > 1, counter.items())))
 
-def part2(rects):
-    seenpoints = set()
-    for i in range(len(rects)):
-        for overlap in overlappedpoints(rects[i], rects[i + 1:]):
-            for point in overlap:
-                seenpoints.add(point)
-    return len(seenpoints)
+rects = list(map(parse, sys.stdin.readlines()))
 
-print("{}".format(part2(list(map(parse, sys.stdin.readlines())))))
+print("Part1: {}".format(part1(rects)))
