@@ -33,6 +33,5 @@ match = input_re.match(sys.stdin.read().strip())
 numPlayers = int(match.group(1))
 lastMarble = int(match.group(2))
 
-import cProfile, pstats
 print("Part1: {}".format(part1(numPlayers, lastMarble)))
 print("Part2: {}".format(part2(numPlayers, lastMarble)))
