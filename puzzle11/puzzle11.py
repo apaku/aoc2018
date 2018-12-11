@@ -48,7 +48,7 @@ def generate_summed_areas(sumgrid, size, subsize):
     for x in range(1, size - subsize):
         for y in range(1, size - subsize):
             subgridsum = sumgrid[(x + subsize, y + subsize)] + sumgrid[(x, y)] - sumgrid[(x + subsize, y)] - sumgrid[(x, y + subsize)]
-            yield ((x, y), subgridsum, subsize)
+            yield ((x+1, y+1), subgridsum, subsize)
 
 def part2(sumgrid, size=301):
     def helper():
