@@ -25,10 +25,6 @@ def grid_power_levels(topleftcell, inputgrid, gridsize=3):
     grid = itertools.product(range(topx, topx+gridsize), range(topy,topy+gridsize))
     return map(lambda p: inputgrid[p], grid)
 
-def part1(grid):
-    allcells = itertools.product(range(1, 299), range(1, 299))
-    return max(map(lambda p: (sum(grid_power_levels(p, grid)), p), allcells))
-
 def gridsum(p, grid):
     x = p[0]
     y = p[1]
@@ -40,7 +36,7 @@ def gridsum(p, grid):
         return grid[p] + grid[(x - 1, y)]
     return grid[p] + grid[(x, y-1)] + grid[(x-1,y)] - grid[(x-1,y-1)]
 
-def buildsumgrid(grid, size):
+def buildsumgrid(grid, size=301):
     allcells = itertools.product(range(1, size), range(1, size))
     sumgrid = dict(grid)
     for x in range(1, size):
@@ -48,15 +44,21 @@ def buildsumgrid(grid, size):
             sumgrid[(x, y)] = gridsum((x, y), sumgrid)
     return sumgrid
 
-def part2(grid, size=301):
-    sumgrid = buildsumgrid(grid, size)
+def generate_summed_areas(sumgrid, size, subsize):
+    for x in range(1, size - subsize):
+        for y in range(1, size - subsize):
+            subgridsum = sumgrid[(x + subsize, y + subsize)] + sumgrid[(x, y)] - sumgrid[(x + subsize, y)] - sumgrid[(x, y + subsize)]
+            yield ((x, y), subgridsum, subsize)
+
+def part2(sumgrid, size=301):
     def helper():
         for subsize in range(2, size - 1):
-            for x in range(1, size - subsize):
-                for y in range(1, size - subsize):
-                    subgridsum = sumgrid[(x + subsize, y + subsize)] + sumgrid[(x, y)] - sumgrid[(x + subsize, y)] - sumgrid[(x, y + subsize)]
-                    yield ((x, y), subgridsum, subsize)
+            for x in generate_summed_areas(sumgrid, size, subsize):
+                yield x
     return max(helper(), key=lambda x: x[1])
+
+def part1(sumgrid, size=301):
+    return max(generate_summed_areas(sumgrid, size, 3), key=lambda x: x[1])
 
 def buildgrid(serialnum, size=301):
     allcells = itertools.product(range(1, size), range(1, size))
@@ -64,7 +66,8 @@ def buildgrid(serialnum, size=301):
 
 serialnum = int(sys.stdin.readline().strip())
 grid = buildgrid(serialnum)
-print("Part1: {}".format(part1(grid)))
-print("Part2/18: {}".format(part2(buildgrid(18))))
-print("Part2/42: {}".format(part2(buildgrid(42))))
-print("Part2: {}".format(part2(grid)))
+sumgrid = buildsumgrid(grid)
+print("Part1: {}".format(part1(sumgrid)))
+print("Part2/18: {}".format(part2(buildsumgrid(buildgrid(18)))))
+print("Part2/42: {}".format(part2(buildsumgrid(buildgrid(42)))))
+print("Part2: {}".format(part2(sumgrid)))
