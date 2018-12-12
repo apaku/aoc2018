@@ -40,11 +40,19 @@ def transition_to_generation(startstate, transitions, generation):
                 num_entries_to_left += 1
                 newstate.insert(j, 0)
         if 1 in newstate[-5:]:
-            newstate = newstate + [0,0,0,0,0]
-        if i % 1000 == 0:
-            print("Generation: {}".format(i))
-    return sum(map(lambda x: x[0] - num_entries_to_left, filter(lambda x: x[1] == 1, enumerate(newstate))))
+            newstate = newstate + [0, 0, 0, 0, 0]
+        gen_sum = sum(map(lambda x: x[0] - num_entries_to_left, filter(lambda x: x[1] == 1, enumerate(newstate))))
+        gen = ''.join(map(lambda x: '.' if x == 0 else '#', newstate))
+        print("{} {} {}".format(gen,gen_sum, i))
 
 (initial_state, transitions) = parse(list(sys.stdin.readlines()))
-print("Part1: {}".format(transition_to_generation(initial_state, transitions, 20)))
-print("Part2: {}".format(transition_to_generation(initial_state, transitions, 50000000000)))
+print("Part1:")
+transition_to_generation(initial_state, transitions, 20)
+print("helper for stable point:")
+transition_to_generation(initial_state, transitions, 300)
+# Determined by looking at the printout and finding a place where the sum-differences start being constant
+sum_at_stable_point = 12130
+gen_at_stable_point = 160
+sum_diff_from_stable_point = 73
+numgenerations = 50000000000
+print("Part2: {}".format(sum_at_stable_point + (numgenerations - 1 - gen_at_stable_point) * sum_diff_from_stable_point))
