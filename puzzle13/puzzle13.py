@@ -40,13 +40,6 @@ class Cart():
     def __eq__(self, othercart):
         return self.id == othercart.id
 
-    def __lt__(self, othercart):
-        if self.y < othercart.y:
-            return True
-        if self.y == othercart.y and self.x < othercart.x:
-            return True
-        return False
-
     def collides(self, othercart):
         return self.x == othercart.x and self.y == othercart.y
 
@@ -105,7 +98,7 @@ def part1(grid, carts):
             collisions = find_collisions(cart, newcarts)
             if len(collisions) > 0:
                 return collisions
-        newcarts = sorted(newcarts)
+        newcarts = sorted(newcarts, key=lambda c: (c.y, c.x))
     return collisions
 
 
@@ -122,7 +115,7 @@ def part2(grid, carts):
                 collided_carts.add(colliding_cart)
         for cart in collided_carts:
             newcarts.remove(cart)
-        newcarts = list(sorted(newcarts))
+        newcarts = sorted(newcarts, key=lambda c: (c.y, c.x))
     return newcarts
 
 
