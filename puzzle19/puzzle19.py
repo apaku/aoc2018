@@ -141,5 +141,25 @@ def part1(ipreg, instructions):
     return registers
 
 
+def part2(ipreg, instructions):
+    registers = [1, 0, 0, 0, 0, 0]
+    instr_pointer = 0
+    instructions_size = len(instructions)
+    while instr_pointer < instructions_size:
+        registers[ipreg] = instr_pointer
+        instruction = instructions[instr_pointer]
+        if instr_pointer == 3:
+            if registers[4] % registers[1] == 0:
+                registers[0] += registers[1]
+            registers[2] = 11
+        else:
+            op = operations[instruction[0]]
+            op(registers, instruction[1], instruction[2], instruction[3])
+        instr_pointer = registers[ipreg]
+        instr_pointer += 1
+    return registers
+
+
 (ipreg, instructions) = parse(sys.stdin.readlines())
 print("Part1: {}".format(part1(ipreg, instructions)))
+print("Part2: {}".format(part2(ipreg, instructions)))
