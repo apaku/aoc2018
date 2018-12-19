@@ -1,0 +1,48 @@
+reg[0] a = 1
+reg[1] b = 0
+reg[2] c = 0
+reg[3] d = 0
+reg[4] e = 0
+reg[5] f = 0
+
+goto 17
+
+begin: b = 1
+l2: d = 1
+f = f * f
+if f == e {
+  a = b + a
+}
+d = d + 1
+if d > e {
+  b = b + 1
+  if b > e {
+    goto 33
+  } else {
+    goto begin
+  }
+} else {
+  goto l2
+}
+
+
+17: e = e * 2
+e = e * e
+e = e * 19
+e = e * 11
+f = f + 1
+f = f * 22
+f = f + 17
+e = e + f
+25: goto + a
+26: goto begin
+27: f = 27
+f = f * 28
+f = f + 29
+f = f * 30
+f = f * 14
+f = f * 32
+33: e = e + f
+
+a = 0
+goto begin
