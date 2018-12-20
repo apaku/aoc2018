@@ -6,27 +6,36 @@
 import sys
 
 # Parse idea:
-# parsePlainPath: get's an index and the data, reads until it finds one of the special tokens or EOF,
-#                 returns a list with all read bytes (which may be empty) and the first index where a
-#                 non-read byte is
-# parseBranch: called when a '(' is encountered, received data and index of the '(', loops over the branches until it finds a ')' in the index returned
-#              by the latest 'parse'. Concatenates the lists it gets, so it returns a list of all possible paths from all branches and the index after the ')'
-# parse: called with index and data, loops until eof or index is not on a letter, calls parsePlainPath, the result is the 'start list' which may be empty,
-#        if it encounters a '(' calls parseBranch and with each item in the resulting list and 'multiplexes' its own path list with the result
-#        yielding a new list of nxm paths, returns that list plus the index it ended at (which may be eof)
+# Determine a list of all possible paths given by the input. How??
 
 # Once a list of all possible paths is determined, eliminate loops with the existing logic in step/part1,
 # that is run through the path and find sub-parts that end up at the same location, eliminate those parts
 # Finally determine lengths, find maximum
 
 
-def parse(data):
-    curnode = Path()
-    idx = 0
-    while idx < len(data):
-        s = data[idx]
-        if s == '(':
-            curnode.children = parse(data[idx + 1:])
+def parse(idx, data):
+    parsed = ""
+    datalen = len(data)
+    while idx < datalen:
+        c = data[idx]
+        print("{} {}".format(idx, c))
+        if c == '(':
+            print("recurse1")
+            (subparsed, nextidx) = parse(idx + 1, data)
+            print("branch1 parse: {}".format(subparsed))
+            idx = nextidx
+        elif c == '|':
+            print("recurse2")
+            (subparsed, nextidx) = parse(idx + 1, data)
+            print("branch2 parse: {}".format(subparsed))
+            idx = nextidx
+        elif c == ')':
+            print("exit recurse")
+            return (parsed, idx + 1)
+        else:
+            parsed += c
+            idx += 1
+    return (parsed, idx)
 
 
 class Path:
@@ -80,4 +89,7 @@ def part1(steplist):
 
 
 path = sys.stdin.readline().strip()
-print("Pat1: {}".format(part1(list(path)[1:-1])))
+print("path: {}".format(path))
+parsed = parse(0, path[1:-1])
+print("{}".format(parsed))
+#print("Pat1: {}".format(part1(list(path)[1:-1])))
