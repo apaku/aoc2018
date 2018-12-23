@@ -83,22 +83,22 @@ def bots_in_range(p, bots):
 
 def part2(bots):
     def helper(bots):
-        minx = min(map(lambda bot: bot.pos.x, bots))
-        maxx = max(map(lambda bot: bot.pos.x, bots))
-        miny = min(map(lambda bot: bot.pos.y, bots))
-        maxy = max(map(lambda bot: bot.pos.y, bots))
-        minz = min(map(lambda bot: bot.pos.z, bots))
-        maxz = max(map(lambda bot: bot.pos.z, bots))
-        for z in range(minz, maxz + 1):
-            print("z: {}".format(z))
-            for y in range(miny, maxy + 1):
-                print("y: {}".format(y))
-                for x in range(minx, maxx + 1):
-                    p = point(x, y, z)
-                    yield (p, distance(point(0, 0, 0), p),
-                           len(bots_in_range(p, bots)))
+        for bot in bots:
+            minx = bot.pos.x - bot.signalradius
+            maxx = bot.pos.x + bot.signalradius
+            miny = bot.pos.y - bot.signalradius
+            maxy = bot.pos.y + bot.signalradius
+            minz = bot.pos.z - bot.signalradius
+            maxz = bot.pos.z + bot.signalradius
+            print("Bot")
+            for z in range(minz, maxz + 1):
+                for y in range(miny, maxy + 1):
+                    for x in range(minx, maxx + 1):
+                        p = point(x, y, z)
+                        yield (p, distance(point(0, 0, 0), p),
+                               len(bots_in_range(p, bots)))
 
-    max(helper(bots), key=lambda x: (x[2], x[1]))
+    return max(helper(bots), key=lambda x: (x[2], x[1]))
 
 
 bots = list(parse(sys.stdin.readlines()))
