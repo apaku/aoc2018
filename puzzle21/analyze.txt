@@ -1,0 +1,31 @@
+seti 123 0 2        reg2 = 123
+bani 2 456 2        reg2 = reg2 & 456
+eqri 2 72 2         reg2 = reg2 == 72 ? 1 : 0
+addr 2 5 5          reg5 = reg2 + reg5
+seti 0 0 5          reg5 = 0
+seti 0 5 2          reg2 = 0
+bori 2 65536 4      reg4 = reg2 | 65536
+seti 6718165 9 2    reg2 = 6718165
+bani 4 255 3        reg3 = reg4 & 255
+addr 2 3 2          reg2 = reg2 + reg3
+bani 2 16777215 2   reg2 = reg2 & 16777215
+muli 2 65899 2      reg2 = reg2 * 65899
+bani 2 16777215 2   reg2 = reg2 & 16777215
+gtir 256 4 3        reg3 = 256 > reg4 ? 1 : 0
+addr 3 5 5          reg5 = reg3 + reg5
+addi 5 1 5          reg5 = reg5 + 1
+seti 27 8 5         reg5 = 27
+seti 0 4 3          reg3 = 0
+addi 3 1 1          reg1 = reg3 + 1
+muli 1 256 1        reg1 = reg1 * 256
+gtrr 1 4 1          reg1 = reg1 > reg4 ? 1 :0
+addr 1 5 5          reg5 = reg1 + reg5
+addi 5 1 5          reg5 = reg5 + 1
+seti 25 8 5         reg5 = 25
+addi 3 1 3          reg3 = reg3 + 1
+seti 17 3 5         reg5 = 17
+setr 3 6 4          reg4 = reg3
+seti 7 9 5          reg5 = 7
+eqrr 2 0 3          reg3 = reg2 == reg0 ? 1 : 0
+addr 3 5 5          reg5 = reg3 + reg5
+seti 5 1 5          reg5 = 5
