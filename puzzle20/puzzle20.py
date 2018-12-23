@@ -7,6 +7,7 @@ import sys
 
 # Parse idea:
 # Determine a list of all possible paths given by the input. How??
+# Recurse upon seeing '(', return only once the corresponding ')' has been seen.
 
 # Once a list of all possible paths is determined, eliminate loops with the existing logic in step/part1,
 # that is run through the path and find sub-parts that end up at the same location, eliminate those parts
