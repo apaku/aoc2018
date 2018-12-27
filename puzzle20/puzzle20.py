@@ -218,7 +218,7 @@ def shorted_walk_distance(path):
 
 
 def part1(paths):
-    return sorted(map(lambda p: shorted_walk_distance(p), paths), reverse=True)
+    return max(map(lambda p: shorted_walk_distance(p), paths))
 
 
 tests()
