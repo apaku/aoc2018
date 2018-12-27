@@ -5,38 +5,168 @@
 
 import sys
 
-# Parse idea:
-# Determine a list of all possible paths given by the input. How??
-# Recurse upon seeing '(', return only once the corresponding ')' has been seen.
-
-# Once a list of all possible paths is determined, eliminate loops with the existing logic in step/part1,
-# that is run through the path and find sub-parts that end up at the same location, eliminate those parts
-# Finally determine lengths, find maximum
-
 
 def parse(idx, data):
-    parsed = ""
+    paths = []
     datalen = len(data)
+    buf = ""
+    curalternativepaths = [""]
     while idx < datalen:
         c = data[idx]
-        print("{} {}".format(idx, c))
-        if c == '(':
-            print("recurse1")
-            (subparsed, nextidx) = parse(idx + 1, data)
-            print("branch1 parse: {}".format(subparsed))
+        if c == '|':
+            if len(buf) > 0:
+                for i in range(len(curalternativepaths)):
+                    curalternativepaths[i] += buf
+            buf = ""
+            paths += curalternativepaths
+            curalternativepaths = [""]
+        elif c == '(':
+            if len(buf) > 0:
+                for i in range(len(curalternativepaths)):
+                    curalternativepaths[i] += buf
+            buf = ""
+            (nextidx, subpaths) = parse(idx + 1, data)
+            newcuralternativepaths = []
+            for p in curalternativepaths:
+                for sp in subpaths:
+                    newcuralternativepaths.append(p + sp)
+            curalternativepaths = newcuralternativepaths
             idx = nextidx
-        elif c == '|':
-            print("recurse2")
-            (subparsed, nextidx) = parse(idx + 1, data)
-            print("branch2 parse: {}".format(subparsed))
-            idx = nextidx
+            continue
         elif c == ')':
-            print("exit recurse")
-            return (parsed, idx + 1)
+            if len(buf) > 0:
+                for i in range(len(curalternativepaths)):
+                    curalternativepaths[i] += buf
+            buf = ""
+            if len(curalternativepaths) > 0:
+                paths += curalternativepaths
+            return (idx + 1, paths)
         else:
-            parsed += c
-            idx += 1
-    return (parsed, idx)
+            buf += c
+        idx += 1
+    if len(buf) > 0:
+        for i in range(len(curalternativepaths)):
+            curalternativepaths[i] += buf
+    buf = ""
+    if len(curalternativepaths) > 0:
+        paths += curalternativepaths
+    return (idx, paths)
+
+
+def test_p1():
+    data = 'abcd'
+    parsed = parse(0, data)
+    print("Parsed: {} into {}".format(data, parsed))
+    assert parsed[1] == ['abcd']
+
+
+def test_p2():
+    data = '(abcd)'
+    parsed = parse(0, data)
+    print("Parsed: {} into {}".format(data, parsed))
+    assert parsed[1] == ['abcd']
+
+
+def test_p3():
+    data = '(ab|cd)'
+    parsed = parse(0, data)
+    print("Parsed: {} into {}".format(data, parsed))
+    assert parsed[1] == ['ab', 'cd']
+
+
+def test_p4():
+    data = '(ab|cd|ef)'
+    parsed = parse(0, data)
+    print("Parsed: {} into {}".format(data, parsed))
+    assert parsed[1] == ['ab', 'cd', 'ef']
+
+
+def test_p5():
+    data = 'ab(cd|ef)'
+    parsed = parse(0, data)
+    print("Parsed: {} into {}".format(data, parsed))
+    assert parsed[1] == ['abcd', 'abef']
+
+
+def test_p6():
+    data = 'ab(cd|ef)gh'
+    parsed = parse(0, data)
+    print("Parsed: {} into {}".format(data, parsed))
+    assert parsed[1] == ['abcdgh', 'abefgh']
+
+
+def test_p7():
+    data = 'ab((cd)|ef)gh'
+    parsed = parse(0, data)
+    print("Parsed: {} into {}".format(data, parsed))
+    assert parsed[1] == ['abcdgh', 'abefgh']
+
+
+def test_p8():
+    data = 'ab((cd|ef)gh|ij)'
+    parsed = parse(0, data)
+    print("Parsed: {} into {}".format(data, parsed))
+    assert parsed[1] == ['abcdgh', 'abefgh', 'abij']
+
+
+def test_p9():
+    data = 'ab(cd|)'
+    parsed = parse(0, data)
+    print("Parsed: {} into {}".format(data, parsed))
+    assert parsed[1] == ['abcd', 'ab']
+
+
+def test_p10():
+    data = 'ab(cd|)ef'
+    parsed = parse(0, data)
+    print("Parsed: {} into {}".format(data, parsed))
+    assert parsed[1] == ['abcdef', 'abef']
+
+
+def test_p11():
+    data = 'ab((cd|gh|)|ef)'
+    parsed = parse(0, data)
+    print("Parsed: {} into {}".format(data, parsed))
+    assert parsed[1] == ['abcd', 'abgh', 'ab', 'abef']
+
+
+def tests():
+    test_p1()
+    test_p2()
+    test_p3()
+    test_p4()
+    test_p5()
+    test_p6()
+    test_p7()
+    test_p8()
+    test_p9()
+    test_p10()
+    test_p11()
+
+
+# def parse(idx, data):
+#     parsed = ""
+#     datalen = len(data)
+#     while idx < datalen:
+#         c = data[idx]
+#         print("{} {}".format(idx, c))
+#         if c == '(':
+#             print("recurse1")
+#             (subparsed, nextidx) = parse(idx + 1, data)
+#             print("branch1 parse: {}".format(subparsed))
+#             idx = nextidx
+#         elif c == '|':
+#             print("recurse2")
+#             (subparsed, nextidx) = parse(idx + 1, data)
+#             print("branch2 parse: {}".format(subparsed))
+#             idx = nextidx
+#         elif c == ')':
+#             print("exit recurse")
+#             return (parsed, idx + 1)
+#         else:
+#             parsed += c
+#             idx += 1
+#     return (parsed, idx)
 
 
 class Path:
@@ -71,26 +201,30 @@ def step(steptext, point):
         raise Exception("Invalid step text: {}".format(steptext))
 
 
-def part1(steplist):
+def shorted_walk_distance(path):
     p = Path()
-    nextstep = 1
-    while nextstep < len(steplist):
-        s = steplist[nextstep]
-        if s == '(':
-            nextstep = dobranch(p, steplist, s)
+    nextstep = 0
+    print("Path len: {}".format(len(path)))
+    while nextstep < len(path):
+        s = path[nextstep]
+        curpoint = p.curpoint()
+        newpoint = step(s, curpoint)
+        if newpoint in p.points_seen:
+            p.revert_to(p.points_seen[newpoint])
         else:
-            curpoint = p.curpoint()
-            newpoint = step(s, curpoint)
-            if newpoint in p.points_seen:
-                p.revert_to(p.points_seen[newpoint])
-            else:
-                p.add_step(newpoint)
-            nextstep += 1
-    return len(p.points_to_walk)
+            p.add_step(newpoint)
+        nextstep += 1
+    return len(p.points_to_walk) - 1
 
+
+def part1(paths):
+    return sorted(map(lambda p: shorted_walk_distance(p), paths), reverse=True)
+
+
+tests()
 
 path = sys.stdin.readline().strip()
 print("path: {}".format(path))
 parsed = parse(0, path[1:-1])
 print("{}".format(parsed))
-#print("Pat1: {}".format(part1(list(path)[1:-1])))
+print("Part1: {}".format(part1(parsed[1])))
