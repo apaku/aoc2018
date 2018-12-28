@@ -144,31 +144,6 @@ def tests():
     test_p11()
 
 
-# def parse(idx, data):
-#     parsed = ""
-#     datalen = len(data)
-#     while idx < datalen:
-#         c = data[idx]
-#         print("{} {}".format(idx, c))
-#         if c == '(':
-#             print("recurse1")
-#             (subparsed, nextidx) = parse(idx + 1, data)
-#             print("branch1 parse: {}".format(subparsed))
-#             idx = nextidx
-#         elif c == '|':
-#             print("recurse2")
-#             (subparsed, nextidx) = parse(idx + 1, data)
-#             print("branch2 parse: {}".format(subparsed))
-#             idx = nextidx
-#         elif c == ')':
-#             print("exit recurse")
-#             return (parsed, idx + 1)
-#         else:
-#             parsed += c
-#             idx += 1
-#     return (parsed, idx)
-
-
 class Path:
     def __init__(self):
         self.points_seen = {(0, 0): 0}
